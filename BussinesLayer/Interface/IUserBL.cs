@@ -9,5 +9,6 @@ namespace BussinesLayer.Interface
     public interface IUserBL
     {
         public UserEntity UserRegistration(Registration registration);
+        public string UserLogin(string email, string password);
     }
 }

@@ -37,5 +37,18 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPost("Login")]
+        public IActionResult UserLogin(string email, string password)
+        {
+            var result = userBL.UserLogin(email, password);
+            if( result!= null )
+            {
+                return this.Ok(new { sucess = true, message = "Login Sucessfull.", data = result });
+            }
+            else
+            {
+                return this.NotFound(new { sucess = false, message = "Login Unsucessfull. Email or password is Invalid." });
+            }
+        }
     }
 }
