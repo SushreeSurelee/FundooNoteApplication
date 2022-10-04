@@ -9,7 +9,6 @@ namespace FundooNoteApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
@@ -37,17 +36,26 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        //[Authorize]
         [HttpPost("Login")]
-        public IActionResult UserLogin(string email, string password)
+        public IActionResult UserLogin(Login login)
         {
-            var result = userBL.UserLogin(email, password);
-            if( result!= null )
+            try
             {
-                return this.Ok(new { sucess = true, message = "Login Sucessfull.", data = result });
+                var result = userBL.UserLogin(login);
+                if (result != null)
+                {
+                    return this.Ok(new { sucess = true, message = "Login Sucessfull.", data = result });
+                }
+                else
+                {
+                    return this.NotFound(new { sucess = false, message = "Login Unsucessfull. Email or password is Invalid." });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.NotFound(new { sucess = false, message = "Login Unsucessfull. Email or password is Invalid." });
+
+                throw ex;
             }
         }
     }

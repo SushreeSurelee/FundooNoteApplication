@@ -49,14 +49,14 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public string UserLogin(string email,string password)
+        public string UserLogin(Login login)
         {
             try
             {
-                var result = fundooContext.UserTable.Where(u => u.EmailID == email && u.Password == password).FirstOrDefault();
+                var result = fundooContext.UserTable.Where(u => u.EmailID == login.EmailID && u.Password == login.Password).FirstOrDefault();
                 if(result!=null)
                 {
-                    return GenerateSecurityToken(email, result.UserId);
+                    return GenerateSecurityToken(login.EmailID, result.UserId);
                 }
                 else
                 {
