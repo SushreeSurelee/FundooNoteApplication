@@ -28,7 +28,7 @@ namespace FundooNoteApplication
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -36,8 +36,6 @@ namespace FundooNoteApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddControllers();
             services.AddDbContext<FundooContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:FundooDB"]));
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<IUserBL, UserBL>();
@@ -51,7 +49,7 @@ namespace FundooNoteApplication
                     Name="Authontication",
                     In=ParameterLocation.Header,
                     Type=SecuritySchemeType.Http,
-                    Description= "JWT Authorization header using the Bearer scheme. \\r\\n\\r\\n Enter 'Bearer' [space] and then your token in the text input below.\\r\\n\\r\\nExample: \\\"Bearer 1safsfsdfdfd\\",
+                    Description= "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.\nExample: \\\"Bearer 1safsfsdfdfd\\",
 
                     Reference=new OpenApiReference
                     {
@@ -66,24 +64,26 @@ namespace FundooNoteApplication
                 });
             });
 
-
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
+            }).AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("KEY_TO_GENARATE_TOKEN")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Key"])),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateLifetime = true,
+                    ValidIssuer = Configuration["JWT:Issuer"]
                 };
             });
+            //services.AddSingleton<UserRL, UserRL>();
+            services.AddControllers();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

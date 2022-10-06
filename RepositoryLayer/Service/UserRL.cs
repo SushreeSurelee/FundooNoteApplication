@@ -16,12 +16,12 @@ namespace RepositoryLayer.Service
     public class UserRL : IUserRL
     {
         private readonly FundooContext fundooContext;
-        public IConfiguration configuration { get; }
+        public IConfiguration Configuration { get; }
 
         public UserRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
-            this.configuration = configuration; 
+            this.Configuration = configuration; 
         }
         public UserEntity UserRegistration(Registration registration)
         {
@@ -69,10 +69,33 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                var emailCheck= fundooContext.UserTable.FirstOrDefault(e => e.EmailID == email);
+                if(emailCheck!=null)
+                {
+                    var token= GenerateSecurityToken(emailCheck.EmailID, emailCheck.UserId);
+                    MSMQModel mSMQModel = new MSMQModel();
+                    mSMQModel.sendData2Queue(token);
+                    return token.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         public string GenerateSecurityToken(string email,long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("KEY_TO_GENARATE_TOKEN");
+            var key = Encoding.ASCII.GetBytes(Configuration["JWT:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

@@ -7,6 +7,7 @@ using System;
 
 namespace FundooNoteApplication.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -36,13 +37,13 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        //[Authorize]
+        
         [HttpPost("Login")]
         public IActionResult UserLogin(Login login)
         {
             try
             {
-                var result = userBL.UserLogin(login);
+                var result = this.userBL.UserLogin(login);
                 if (result != null)
                 {
                     return this.Ok(new { sucess = true, message = "Login Sucessfull.", data = result });
@@ -50,6 +51,27 @@ namespace FundooNoteApplication.Controllers
                 else
                 {
                     return this.NotFound(new { sucess = false, message = "Login Unsucessfull. Email or password is Invalid." });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        [HttpPost("Forget_Password")]
+        public IActionResult ForgetPassword(string email)
+        {
+            try
+            {
+                var result = this.userBL.ForgetPassword(email);
+                if(result != null)
+                {
+                    return this.Ok(new { sucess = true, message = "Password reset mail has sent sucessfully" });
+                }
+                else
+                {
+                    return this.BadRequest(new { sucess = false, message = "Failed to send the email. Please enter registred email ID." });
                 }
             }
             catch (Exception ex)
