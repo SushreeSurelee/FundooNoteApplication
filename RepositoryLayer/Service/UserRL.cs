@@ -21,7 +21,7 @@ namespace RepositoryLayer.Service
         public UserRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
-            this.Configuration = configuration; 
+            this.Configuration = configuration;
         }
         public UserEntity UserRegistration(Registration registration)
         {
@@ -53,10 +53,10 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var result = fundooContext.UserTable.Where(u => u.EmailID == login.EmailID && u.Password == login.Password).FirstOrDefault();
+                var result = this.fundooContext.UserTable.FirstOrDefault(e => e.EmailID == login.EmailID && e.Password == login.Password);
                 if(result!=null)
                 {
-                    return GenerateSecurityToken(login.EmailID, result.UserId);
+                    return GenerateSecurityToken(result.EmailID,result.UserId);
                 }
                 else
                 {
@@ -76,7 +76,7 @@ namespace RepositoryLayer.Service
                 var emailCheck= fundooContext.UserTable.FirstOrDefault(e => e.EmailID == email);
                 if(emailCheck!=null)
                 {
-                    var token= GenerateSecurityToken(emailCheck.EmailID, emailCheck.UserId);
+                    var token= GenerateSecurityToken(emailCheck.EmailID,emailCheck.UserId);
                     MSMQModel mSMQModel = new MSMQModel();
                     mSMQModel.sendData2Queue(token);
                     return token.ToString();
@@ -84,6 +84,28 @@ namespace RepositoryLayer.Service
                 else
                 {
                     return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public bool ResetPassword(string email,string password, string confirmPassword)
+        {
+            try
+            {
+                if(password.Equals(confirmPassword))
+                {
+                    var result = fundooContext.UserTable.Where(e => e.EmailID == email).FirstOrDefault();
+                    result.Password = password;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -100,10 +122,10 @@ namespace RepositoryLayer.Service
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("email", email),
+                    new Claim(ClaimTypes.Email, email),
                     new Claim("userId", userId.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

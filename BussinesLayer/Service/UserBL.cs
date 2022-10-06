@@ -4,6 +4,7 @@ using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace BussinesLayer.Service
@@ -39,6 +40,18 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
+        public string GenerateSecurityToken(string email, long userId)
+        {
+            try
+            {
+                return this.userRL.GenerateSecurityToken(email,userId);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         public string ForgetPassword(string email)
         {
             try
@@ -51,6 +64,18 @@ namespace BussinesLayer.Service
                 throw ex;
             }
            
+        }
+        public bool ResetPassword(string email, string password, string confirmPassword)
+        {
+            try
+            {
+                return userRL.ResetPassword(email, password, confirmPassword);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }

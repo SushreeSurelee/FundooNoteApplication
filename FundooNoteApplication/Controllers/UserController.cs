@@ -3,11 +3,12 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryLayer.Entities;
 using System;
+using System.Security.Claims;
 
 namespace FundooNoteApplication.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -37,7 +38,6 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        
         [HttpPost("Login")]
         public IActionResult UserLogin(Login login)
         {
@@ -59,7 +59,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPost("Forget_Password")]
+        [HttpPost("ForgetPassword")]
         public IActionResult ForgetPassword(string email)
         {
             try
@@ -77,6 +77,24 @@ namespace FundooNoteApplication.Controllers
             catch (Exception ex)
             {
 
+                throw ex;
+            }
+        }
+        [Authorize]
+        [HttpPost("ResetPassword")]
+        public IActionResult RsetPassword(string password, string confirmPassword)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var result = userBL.ResetPassword(email, password, confirmPassword);
+                if (result)
+                    return this.Ok(new { success = true, message = "Password reset is successfull"});
+                else
+                    return this.BadRequest(new { success = false, message = "Password reset is failed. Please enter valid password" });
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }

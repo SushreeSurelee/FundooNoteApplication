@@ -44,12 +44,12 @@ namespace FundooNoteApplication
             {
                 var jwtSecurityScheme = new OpenApiSecurityScheme
                 {
-                    Scheme="bearer",
+                    Scheme="Bearer",
                     BearerFormat="JWT",
                     Name="Authontication",
                     In=ParameterLocation.Header,
                     Type=SecuritySchemeType.Http,
-                    Description= "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.\nExample: \\\"Bearer 1safsfsdfdfd\\",
+                    Description= "JWT Authorization header using the Bearer scheme. Enter your token in the text input below.",
 
                     Reference=new OpenApiReference
                     {
@@ -77,8 +77,8 @@ namespace FundooNoteApplication
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Key"])),
                     ValidateIssuer = false,
-                    ValidateLifetime = true,
-                    ValidIssuer = Configuration["JWT:Issuer"]
+                    ValidateAudience=false
+                    //ValidateLifetime = false,
                 };
             });
             //services.AddSingleton<UserRL, UserRL>();
