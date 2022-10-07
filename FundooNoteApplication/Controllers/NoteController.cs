@@ -27,6 +27,7 @@ namespace FundooNoteApplication.Controllers
             {
                 //long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
                 //var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                //var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
                 var result = this.noteBL.UserNoteCreation(userId, createNote);
                 if (result != null)
