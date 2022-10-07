@@ -43,5 +43,29 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpGet("GetNote")]
+        public IActionResult GetNote()
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.noteBL.GetNote(userId);
+                if (result != null)
+                {
+                    return this.Ok(new { sucess = true, message = "All notes are fetched and now you can read your notes", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { sucess = false, message = "Unable to show the notes." });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
+        }
+
     }
 }

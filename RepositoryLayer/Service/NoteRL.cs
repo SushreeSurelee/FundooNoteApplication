@@ -51,5 +51,18 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public List<NoteEntity> GetNote(long userId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.userID == userId).ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

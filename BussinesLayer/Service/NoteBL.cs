@@ -27,5 +27,17 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
+        public List<NoteEntity> GetNote(long userId)
+        {
+            try
+            {
+                return this.noteRL.GetNote(userId);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

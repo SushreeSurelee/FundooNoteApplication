@@ -51,7 +51,7 @@ namespace FundooNoteApplication
                     Name="Authontication",
                     In=ParameterLocation.Header,
                     Type=SecuritySchemeType.Http,
-                    Description= "JWT Authorization header using the Bearer scheme. Enter your token in the text input below.",
+                    Description= "JWT Authorization header using the Bearer scheme. Enter your token below.",
 
                     Reference=new OpenApiReference
                     {
@@ -113,7 +113,7 @@ namespace FundooNoteApplication
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TestService");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fundoo Note");
             });
         }
     }
