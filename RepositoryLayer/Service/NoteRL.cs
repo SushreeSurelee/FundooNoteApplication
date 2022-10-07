@@ -17,12 +17,12 @@ namespace RepositoryLayer.Service
         {
             this.fundooContext = fundooContext;
         }
-        public NoteEntity UserNoteCreation(string email,Note createNote)
+        public NoteEntity UserNoteCreation(long userId,Note createNote)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
-                var result = fundooContext.UserTable.Where( e =>e.EmailID == email).FirstOrDefault();
+                var result = fundooContext.UserTable.Where(user =>user.UserId == userId).FirstOrDefault();
                 noteEntity.Title = createNote.Title;
                 noteEntity.Description = createNote.Description;
                 noteEntity.Reminder = createNote.Reminder;
@@ -33,7 +33,8 @@ namespace RepositoryLayer.Service
                 noteEntity.Trash = createNote.Trash;
                 noteEntity.Created = createNote.Created;
                 noteEntity.Edited = createNote.Edited;
-                noteEntity.UserId = result.UserId;
+                noteEntity.userID = result.UserId;
+
                 fundooContext.NoteTable.Add(noteEntity);
                 int update = fundooContext.SaveChanges();
                 if(update>0)

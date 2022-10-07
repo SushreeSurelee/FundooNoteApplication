@@ -8,6 +8,6 @@ namespace RepositoryLayer.Interface
 {
     public interface INoteRL
     {
-        public NoteEntity UserNoteCreation(string email, Note createNote);
+        public NoteEntity UserNoteCreation(long userId, Note createNote);
     }
 }

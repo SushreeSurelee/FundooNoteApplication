@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace FundooNoteApplication.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

@@ -23,8 +23,8 @@ namespace RepositoryLayer.Entities
         public DateTime Edited { get; set; }
 
         [ForeignKey("User")]
-        public long UserId { get; set; }
-        public virtual UserEntity User { get; set; }
+        public long userID { get; set; }
+        //public virtual UserEntity user { get; set; }
 
     }
 }

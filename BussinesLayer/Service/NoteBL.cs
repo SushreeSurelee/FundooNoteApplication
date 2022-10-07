@@ -15,11 +15,11 @@ namespace BussinesLayer.Service
         {
             this.noteRL = noteRL;
         }
-        public NoteEntity UserNoteCreation(string email, Note createNote)
+        public NoteEntity UserNoteCreation(long userId, Note createNote)
         {
             try
             {
-                return this.noteRL.UserNoteCreation(email, createNote);
+                return this.noteRL.UserNoteCreation(userId, createNote);
             }
             catch (Exception ex)
             {
