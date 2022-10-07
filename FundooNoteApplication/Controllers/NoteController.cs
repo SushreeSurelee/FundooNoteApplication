@@ -64,7 +64,29 @@ namespace FundooNoteApplication.Controllers
 
                 throw ex;
             }
-            
+        }
+        [HttpDelete("TrashNote")]
+        public IActionResult TrashNote(long noteId)
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.noteBL.TrashNote(userId, noteId);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note trashed successfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to trash the note." });
+                }
+                    
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
     }

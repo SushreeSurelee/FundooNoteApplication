@@ -64,5 +64,27 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool TrashNote(long userId, long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.userID == userId && note.NoteId == noteId).FirstOrDefault();
+                if (result!=null)
+                {
+                    fundooContext.NoteTable.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
