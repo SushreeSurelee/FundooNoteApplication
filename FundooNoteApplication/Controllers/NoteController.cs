@@ -65,6 +65,28 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPut("UpdateNote")]
+        public IActionResult UpdateNote(long noteId, Note note)
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = noteBL.UpdateNote(userId, noteId, note);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note updated Successfully" });
+                } 
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to update note" });
+                } 
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         [HttpDelete("TrashNote")]
         public IActionResult TrashNote(long noteId)
         {

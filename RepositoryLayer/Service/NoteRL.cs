@@ -64,6 +64,42 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool UpdateNote(long userId, long noteId, Note note)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.userID == userId && note.NoteId == noteId).FirstOrDefault();
+                if (result != null)
+                {
+                    result.Title = note.Title;
+                    result.Description = note.Description;
+                    result.Reminder = note.Reminder;
+                    result.Colour = note.Colour;
+                    result.Image = note.Image;
+                    result.Created = note.Created;
+                    result.Edited = note.Edited;
+
+                    fundooContext.NoteTable.Update(result);
+                    var update= fundooContext.SaveChanges();
+                    if(update>0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         public bool TrashNote(long userId, long noteId)
         {
             try
@@ -86,5 +122,6 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+
     }
 }
