@@ -61,7 +61,6 @@ namespace FundooNoteApplication.Controllers
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -83,7 +82,6 @@ namespace FundooNoteApplication.Controllers
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -96,11 +94,11 @@ namespace FundooNoteApplication.Controllers
                 var result = this.noteBL.DeleteNote(userId, noteId);
                 if (result)
                 {
-                    return this.Ok(new { success = true, message = "Note trashed successfully." });
+                    return this.Ok(new { success = true, message = "Note deleted successfully." });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to trash the note." });
+                    return this.BadRequest(new { success = false, message = "Unable to delete the note." });
                 }
                     
             }
@@ -115,7 +113,6 @@ namespace FundooNoteApplication.Controllers
         {
             try
             {
-                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
                 var result = this.noteBL.PinnedNote(noteId);
                 if (result)
                 {
@@ -123,7 +120,27 @@ namespace FundooNoteApplication.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to pin the note." });
+                    return this.BadRequest(new { success = false, message = "Unable to pin note as this note is already pinned" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpPut("ArchiveNote")]
+        public IActionResult ArchiveNote(long noteId)
+        {
+            try
+            {
+                var result = this.noteBL.ArchiveNote(noteId);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note is Archived successfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to Archive note as this note is already archived." });
                 }
             }
             catch (Exception ex)
@@ -132,6 +149,26 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPut("TrashNote")]
+        public IActionResult Trashed(long noteId)
+        {
+            try
+            {
+                var result = this.noteBL.Trashed(noteId);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note is moved to Trash successfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to Trash note as this note is already trashed." });
+                }
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+        }
     }
 }

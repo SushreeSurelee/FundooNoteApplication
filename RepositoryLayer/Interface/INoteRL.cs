@@ -13,5 +13,7 @@ namespace RepositoryLayer.Interface
         public bool DeleteNote(long userId, long noteId);
         public bool UpdateNote(long userId, long noteId, Note note);
         public bool PinnedNote(long noteId);
+        public bool ArchiveNote(long noteId);
+        public bool Trashed(long noteId);
     }
 }

@@ -139,11 +139,55 @@ namespace RepositoryLayer.Service
                     fundooContext.SaveChanges();
                     return false;
                 }
-                
             }
             catch (Exception ex)
             {
-
+                throw ex;
+            }
+        }
+        public bool ArchiveNote(long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.NoteId == noteId).FirstOrDefault();
+                if (result.Archive == false)
+                {
+                    result.Archive = true;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    result.Archive = false;
+                    fundooContext.SaveChanges();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Trashed(long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.NoteId == noteId).FirstOrDefault();
+                if (result.Trash == false)
+                {
+                    result.Trash = true;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    result.Trash = false;
+                    fundooContext.SaveChanges();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
