@@ -65,7 +65,6 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -88,7 +87,6 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -110,7 +108,6 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -130,7 +127,6 @@ namespace RepositoryLayer.Service
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
             return tokenHandler.WriteToken(token);
         }
     }

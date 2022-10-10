@@ -145,7 +145,6 @@ namespace FundooNoteApplication.Controllers
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -170,5 +169,26 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPut("NoteColour")]
+        public IActionResult NoteColour(long noteId, string colour)
+        {
+            try
+            {
+                var result = this.noteBL.NoteColour(noteId,colour);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note colour is changed successfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Entered colour is same as current note colour." });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
     }
 }

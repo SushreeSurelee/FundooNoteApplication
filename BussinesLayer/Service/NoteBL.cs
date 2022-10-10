@@ -100,5 +100,16 @@ namespace BussinesLayer.Service
             }
             
         }
+        public bool NoteColour(long noteId, string colour)
+        {
+            try
+            {
+                return this.noteRL.NoteColour(noteId, colour);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

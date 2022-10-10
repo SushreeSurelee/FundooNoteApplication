@@ -191,5 +191,27 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool NoteColour(long noteId, string colour)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.NoteId == noteId).FirstOrDefault();
+                if(result.Colour!=colour)
+                {
+                    result.Colour = colour;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
