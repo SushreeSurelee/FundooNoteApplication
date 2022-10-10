@@ -87,13 +87,13 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpDelete("TrashNote")]
-        public IActionResult TrashNote(long noteId)
+        [HttpDelete("DeleteNote")]
+        public IActionResult DeleteNote(long noteId)
         {
             try
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var result = this.noteBL.TrashNote(userId, noteId);
+                var result = this.noteBL.DeleteNote(userId, noteId);
                 if (result)
                 {
                     return this.Ok(new { success = true, message = "Note trashed successfully." });
@@ -103,6 +103,28 @@ namespace FundooNoteApplication.Controllers
                     return this.BadRequest(new { success = false, message = "Unable to trash the note." });
                 }
                     
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        [HttpPut("PinNote")]
+        public IActionResult PinnedNote(long noteId)
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.noteBL.PinnedNote(noteId);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Note is pinned successfully." });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to pin the note." });
+                }
             }
             catch (Exception ex)
             {

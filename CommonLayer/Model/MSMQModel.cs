@@ -13,14 +13,13 @@ namespace CommonLayer.Model
         
         public void sendData2Queue(string token)
         {
-            messageQ.Path = @".\private$\Token";
-            if(!MessageQueue.Exists(messageQ.Path))
+            messageQ.Path = @".\private$\Token"; //Setting the QueuPath where we want to store the messages.
+            if (!MessageQueue.Exists(messageQ.Path))
             {
                 MessageQueue.Create(messageQ.Path);
             }
             messageQ.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
-            messageQ.ReceiveCompleted += MessageQ_ReceiveCompleted; //implimenting both Delegate and event
-            messageQ.Send(token);
+            messageQ.ReceiveCompleted += MessageQ_ReceiveCompleted; //implimenting both Delegate and event.
             messageQ.BeginReceive();
             messageQ.Close();
         }

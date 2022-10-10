@@ -33,7 +33,7 @@ namespace RepositoryLayer.Service
                 noteEntity.Trash = createNote.Trash;
                 noteEntity.Created = createNote.Created;
                 noteEntity.Edited = createNote.Edited;
-                noteEntity.userID = result.UserId;
+                noteEntity.UserID = result.UserId;
 
                 fundooContext.NoteTable.Add(noteEntity);
                 int update = fundooContext.SaveChanges();
@@ -55,7 +55,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var result = fundooContext.NoteTable.Where(note => note.userID == userId).ToList();
+                var result = fundooContext.NoteTable.Where(note => note.UserID == userId).ToList();
                 return result;
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var result = fundooContext.NoteTable.Where(note => note.userID == userId && note.NoteId == noteId).FirstOrDefault();
+                var result = fundooContext.NoteTable.Where(note => note.UserID == userId && note.NoteId == noteId).FirstOrDefault();
                 if (result != null)
                 {
                     result.Title = note.Title;
@@ -100,11 +100,11 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool TrashNote(long userId, long noteId)
+        public bool DeleteNote(long userId, long noteId)
         {
             try
             {
-                var result = fundooContext.NoteTable.Where(note => note.userID == userId && note.NoteId == noteId).FirstOrDefault();
+                var result = fundooContext.NoteTable.Where(note => note.UserID == userId && note.NoteId == noteId).FirstOrDefault();
                 if (result!=null)
                 {
                     fundooContext.NoteTable.Remove(result);
@@ -122,6 +122,30 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool PinnedNote(long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(note => note.NoteId == noteId).FirstOrDefault();
+                if(result.Pinned==false)
+                {
+                    result.Pinned = true;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    result.Pinned = false;
+                    fundooContext.SaveChanges();
+                    return false;
+                }
+                
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+        }
     }
 }

@@ -51,11 +51,23 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
-        public bool TrashNote(long userId, long noteId)
+        public bool DeleteNote(long userId, long noteId)
         {
             try
             {
-                return this.noteRL.TrashNote(userId, noteId);
+                return this.noteRL.DeleteNote(userId, noteId);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public bool PinnedNote(long noteId)
+        {
+            try
+            {
+                return this.noteRL.PinnedNote(noteId);
             }
             catch (Exception ex)
             {
