@@ -71,9 +71,9 @@ namespace FundooNoteApplication.Controllers
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
                 var result = noteBL.UpdateNote(userId, noteId, note);
-                if (result)
+                if (result!=null)
                 {
-                    return this.Ok(new { success = true, message = "Note updated Successfully" });
+                    return this.Ok(new { success = true, message = "Note updated Successfully",data=result });
                 } 
                 else
                 {
@@ -116,7 +116,7 @@ namespace FundooNoteApplication.Controllers
                 var result = this.noteBL.PinnedNote(noteId);
                 if (result)
                 {
-                    return this.Ok(new { success = true, message = "Note is pinned successfully." });
+                    return this.Ok(new { success = true, message = "Note is pinned successfully."});
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace FundooNoteApplication.Controllers
                 var result = this.noteBL.NoteColour(noteId,colour);
                 if (result)
                 {
-                    return this.Ok(new { success = true, message = "Note colour is changed successfully." });
+                    return this.Ok(new { success = true, message = "Note colour changed successfully." });
                 }
                 else
                 {
@@ -189,6 +189,27 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        
+        [HttpPut("UploadImage")]
+        public IActionResult Image(long noteId, IFormFile img)
+        {
+            try
+            {
+                var result = this.noteBL.Image(noteId, img);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = "Image uploaded sucessfully", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Failed to upload Image" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
+        }
     }
 }

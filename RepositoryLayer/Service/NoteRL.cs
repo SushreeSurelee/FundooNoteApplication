@@ -1,4 +1,7 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
@@ -6,6 +9,7 @@ using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 
 namespace RepositoryLayer.Service
@@ -64,7 +68,7 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool UpdateNote(long userId, long noteId, Note note)
+        public NoteEntity UpdateNote(long userId, long noteId, Note note)
         {
             try
             {
@@ -74,7 +78,6 @@ namespace RepositoryLayer.Service
                     result.Title = note.Title;
                     result.Description = note.Description;
                     result.Reminder = note.Reminder;
-                    result.Colour = note.Colour;
                     result.Image = note.Image;
                     result.Created = note.Created;
                     result.Edited = note.Edited;
@@ -83,16 +86,16 @@ namespace RepositoryLayer.Service
                     var update= fundooContext.SaveChanges();
                     if(update>0)
                     {
-                        return true;
+                        return result;
                     }
                     else
                     {
-                        return false;
+                        return null;
                     }
                     
                 }
                 else
-                    return false;
+                    return null;
             }
             catch (Exception ex)
             {
@@ -210,6 +213,40 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
+        public NoteEntity Image(long noteId, IFormFile file)
+        {
+            try
+            {
+                var result = this.fundooContext.NoteTable.Where(note => note.NoteId == noteId).FirstOrDefault();
+                if (result != null)
+                {
+                    Account account = new Account(
+                        "dnleksaub",
+                        "428761563518582",
+                        "txR9BhSHSmKn6e9ChNKjXVnO2SM");
+
+                    Cloudinary cloudinary = new Cloudinary(account);
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream()),
+                    };
+                    var upload = cloudinary.Upload(uploadParams);
+                    string filePath = upload.Url.ToString();
+                    result.Image = filePath;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }

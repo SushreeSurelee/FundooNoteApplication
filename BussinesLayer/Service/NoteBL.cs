@@ -1,5 +1,6 @@
 ﻿using BussinesLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace BussinesLayer.Service
 {
-    public class NoteBL :INoteBL
+    public class NoteBL : INoteBL
     {
         private readonly INoteRL noteRL;
         public NoteBL(INoteRL noteRL)
@@ -39,7 +40,7 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
-        public bool UpdateNote(long userId, long noteId, Note note)
+        public NoteEntity UpdateNote(long userId, long noteId, Note note)
         {
             try
             {
@@ -98,13 +99,24 @@ namespace BussinesLayer.Service
 
                 throw ex;
             }
-            
+
         }
         public bool NoteColour(long noteId, string colour)
         {
             try
             {
                 return this.noteRL.NoteColour(noteId, colour);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public NoteEntity Image(long noteId, IFormFile img)
+        {
+            try
+            {
+                return this.noteRL.Image(noteId, img);
             }
             catch (Exception ex)
             {
