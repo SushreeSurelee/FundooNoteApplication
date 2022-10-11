@@ -13,10 +13,10 @@ namespace RepositoryLayer.Interface
         public List<NoteEntity> GetNote(long userId);
         public bool DeleteNote(long userId, long noteId);
         public NoteEntity UpdateNote(long userId, long noteId, Note note);
-        public bool PinnedNote(long noteId);
-        public bool ArchiveNote(long noteId);
-        public bool Trashed(long noteId);
-        public bool NoteColour(long noteId, string colour);
+        public NoteEntity PinnedNote(long noteId);
+        public NoteEntity ArchiveNote(long noteId);
+        public NoteEntity Trashed(long noteId);
+        public NoteEntity NoteColour(long noteId, string colour);
         public NoteEntity Image(long noteId, IFormFile img);
     }
 }

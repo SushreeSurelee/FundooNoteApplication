@@ -64,7 +64,7 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
-        public bool PinnedNote(long noteId)
+        public NoteEntity PinnedNote(long noteId)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
-        public bool ArchiveNote(long noteId)
+        public NoteEntity ArchiveNote(long noteId)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
-        public bool Trashed(long noteId)
+        public NoteEntity Trashed(long noteId)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace BussinesLayer.Service
             }
 
         }
-        public bool NoteColour(long noteId, string colour)
+        public NoteEntity NoteColour(long noteId, string colour)
         {
             try
             {

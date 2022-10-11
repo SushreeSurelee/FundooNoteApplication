@@ -17,16 +17,17 @@ namespace RepositoryLayer.Service
     public class NoteRL:INoteRL
     {
         private readonly FundooContext fundooContext;
-        public NoteRL(FundooContext fundooContext)
+        public IConfiguration Configuration { get; }
+        public NoteRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
+            this.Configuration = configuration;
         }
         public NoteEntity UserNoteCreation(long userId,Note createNote)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
-                var result = fundooContext.UserTable.Where(user =>user.UserId == userId).FirstOrDefault();
                 noteEntity.Title = createNote.Title;
                 noteEntity.Description = createNote.Description;
                 noteEntity.Reminder = createNote.Reminder;
@@ -37,7 +38,7 @@ namespace RepositoryLayer.Service
                 noteEntity.Trash = createNote.Trash;
                 noteEntity.Created = createNote.Created;
                 noteEntity.Edited = createNote.Edited;
-                noteEntity.UserID = result.UserId;
+                noteEntity.UserID = userId;
 
                 fundooContext.NoteTable.Add(noteEntity);
                 int update = fundooContext.SaveChanges();
@@ -78,10 +79,8 @@ namespace RepositoryLayer.Service
                     result.Title = note.Title;
                     result.Description = note.Description;
                     result.Reminder = note.Reminder;
-                    result.Image = note.Image;
                     result.Created = note.Created;
                     result.Edited = note.Edited;
-
                     fundooContext.NoteTable.Update(result);
                     var update= fundooContext.SaveChanges();
                     if(update>0)
@@ -92,14 +91,12 @@ namespace RepositoryLayer.Service
                     {
                         return null;
                     }
-                    
                 }
                 else
                     return null;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -125,7 +122,7 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool PinnedNote(long noteId)
+        public NoteEntity PinnedNote(long noteId)
         {
             try
             {
@@ -134,13 +131,13 @@ namespace RepositoryLayer.Service
                 {
                     result.Pinned = true;
                     fundooContext.SaveChanges();
-                    return true;
+                    return result;
                 }
                 else
                 {
                     result.Pinned = false;
                     fundooContext.SaveChanges();
-                    return false;
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -148,7 +145,7 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool ArchiveNote(long noteId)
+        public NoteEntity ArchiveNote(long noteId)
         {
             try
             {
@@ -157,13 +154,13 @@ namespace RepositoryLayer.Service
                 {
                     result.Archive = true;
                     fundooContext.SaveChanges();
-                    return true;
+                    return result;
                 }
                 else
                 {
                     result.Archive = false;
                     fundooContext.SaveChanges();
-                    return false;
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -171,7 +168,7 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool Trashed(long noteId)
+        public NoteEntity Trashed(long noteId)
         {
             try
             {
@@ -180,13 +177,13 @@ namespace RepositoryLayer.Service
                 {
                     result.Trash = true;
                     fundooContext.SaveChanges();
-                    return true;
+                    return result;
                 }
                 else
                 {
                     result.Trash = false;
                     fundooContext.SaveChanges();
-                    return false;
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -194,7 +191,7 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool NoteColour(long noteId, string colour)
+        public NoteEntity NoteColour(long noteId, string colour)
         {
             try
             {
@@ -202,12 +199,13 @@ namespace RepositoryLayer.Service
                 if(result.Colour!=colour)
                 {
                     result.Colour = colour;
+                    fundooContext.NoteTable.Update(result);
                     fundooContext.SaveChanges();
-                    return true;
+                    return result;
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
                 
             }
@@ -224,9 +222,9 @@ namespace RepositoryLayer.Service
                 if (result != null)
                 {
                     Account account = new Account(
-                        "dnleksaub",
-                        "428761563518582",
-                        "txR9BhSHSmKn6e9ChNKjXVnO2SM");
+                     this.Configuration["CloudinaryConnetion:CLOUD_NAME"],
+                       this.Configuration["CloudinaryConnetion:API_KEY"],
+                        this.Configuration["CloudinaryConnetion:API_SECRET"]);
 
                     Cloudinary cloudinary = new Cloudinary(account);
                     var uploadParams = new ImageUploadParams()
@@ -234,8 +232,7 @@ namespace RepositoryLayer.Service
                         File = new FileDescription(file.FileName, file.OpenReadStream()),
                     };
                     var upload = cloudinary.Upload(uploadParams);
-                    string filePath = upload.Url.ToString();
-                    result.Image = filePath;
+                    result.Image = upload.Url.ToString();
                     fundooContext.SaveChanges();
                     return result;
                 }
@@ -246,7 +243,6 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }

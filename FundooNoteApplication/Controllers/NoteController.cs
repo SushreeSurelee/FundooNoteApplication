@@ -114,13 +114,17 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 var result = this.noteBL.PinnedNote(noteId);
-                if (result)
+                if (result.Pinned==true)
                 {
-                    return this.Ok(new { success = true, message = "Note is pinned successfully."});
+                    return this.Ok(new { success = true, message = "Note is pinned successfully.", data = result });
+                }
+                else if (result.Pinned==false)
+                {
+                    return this.Ok(new { success = true, message = "Note is unpinned sucessfully", data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to pin note as this note is already pinned" });
+                    return this.BadRequest(new { success = false, message = "Unable to pin the note." });
                 }
             }
             catch (Exception ex)
@@ -134,13 +138,17 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 var result = this.noteBL.ArchiveNote(noteId);
-                if (result)
+                if (result.Archive == true)
                 {
-                    return this.Ok(new { success = true, message = "Note is Archived successfully." });
+                    return this.Ok(new { success = true, message = "Note is Archived successfully.", data = result });
+                }
+                else if (result.Archive == false)
+                {
+                    return this.Ok(new { success = true, message = "Note is unarchived sucessfully", data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to Archive note as this note is already archived." });
+                    return this.BadRequest(new { success = false, message = "Unable to archive the note." });
                 }
             }
             catch (Exception ex)
@@ -154,13 +162,17 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 var result = this.noteBL.Trashed(noteId);
-                if (result)
+                if (result.Trash==true)
                 {
-                    return this.Ok(new { success = true, message = "Note is moved to Trash successfully." });
+                    return this.Ok(new { success = true, message = "Note is moved to Trash successfully.",data=result });
+                }
+                else if (result.Trash==false)
+                {
+                    return this.Ok(new { success = true, message = "Note is untrashed sucessfully.",data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to Trash note as this note is already trashed." });
+                    return this.BadRequest(new { success = false, message = "Unable to trash the note." });
                 }
             }
             catch (Exception ex)
@@ -175,9 +187,9 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 var result = this.noteBL.NoteColour(noteId,colour);
-                if (result)
+                if (result!=null)
                 {
-                    return this.Ok(new { success = true, message = "Note colour changed successfully." });
+                    return this.Ok(new { success = true, message = "Note colour changed successfully.",data=result });
                 }
                 else
                 {
