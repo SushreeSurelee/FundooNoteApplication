@@ -40,5 +40,27 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpGet("GetAllCollaborator")]
+        public IActionResult GetAllCollab()
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.collabBL.GetAllCollab(UserId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "All Collab are fetched Successfully", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to show the collaborates" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

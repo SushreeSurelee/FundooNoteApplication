@@ -6,6 +6,7 @@ using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace RepositoryLayer.Service
 {
@@ -35,6 +36,19 @@ namespace RepositoryLayer.Service
                 {
                     return null;
                 }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public List<CollabEntity> GetAllCollab(long UserId)
+        {
+            try
+            {
+                var result = fundooContext.CollabTable.Where(u => u.UserId == UserId).ToList();
+                return result;
             }
             catch (Exception ex)
             {

@@ -26,5 +26,17 @@ namespace BussinesLayer.Service
 				throw ex;
 			}
         }
+        public List<CollabEntity> GetAllCollab(long UserId)
+		{
+			try
+			{
+				return this.collabRL.GetAllCollab(UserId);
+			}
+			catch (Exception ex)
+			{
+
+				throw ex;
+			}
+		}
     }
 }
