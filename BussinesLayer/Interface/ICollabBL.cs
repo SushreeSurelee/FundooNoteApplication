@@ -10,5 +10,6 @@ namespace BussinesLayer.Interface
     {
         public CollabEntity CreateCollab(long UserId, long NoteId, Collaborator collaborator);
         public List<CollabEntity> GetAllCollab(long UserId);
+        public bool DeleteCollab(long collabId);
     }
 }
