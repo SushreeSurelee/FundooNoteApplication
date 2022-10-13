@@ -27,7 +27,7 @@ namespace FundooNoteApplication.Controllers
                 var result = this.collabBL.CreateCollab(UserId, NoteId, collaborator);
                 if(result!=null)
                 {
-                    return this.Ok(new { Success = true, message = "Collaborated Successfully", Response = result });
+                    return this.Ok(new { Success = true, message = "Collaborated Successfully", data = result });
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace FundooNoteApplication.Controllers
                 var result = this.collabBL.GetAllCollab(UserId);
                 if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = "All Collab are fetched Successfully", Response = result });
+                    return this.Ok(new { Success = true, message = "All Collab are fetched Successfully", data = result });
                 }
                 else
                 {
@@ -58,7 +58,6 @@ namespace FundooNoteApplication.Controllers
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
