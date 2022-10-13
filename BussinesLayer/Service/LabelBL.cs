@@ -15,11 +15,11 @@ namespace BussinesLayer.Service
 		{
 			this.labelRL = labelRL;
 		}
-        public LabelEntity CreateLabel(long UserId, long NoteId, string LabelName)
+        public LabelEntity CreateLabel(long userId, long noteId, string labelName)
         {
 			try
 			{
-				return this.labelRL.CreateLabel(UserId, NoteId, LabelName);
+				return this.labelRL.CreateLabel(userId, noteId, labelName);
 			}
 			catch (Exception)
 			{
@@ -27,5 +27,16 @@ namespace BussinesLayer.Service
 				throw;
 			}
         }
+        public List<LabelEntity> GetAllLabel(long userId)
+		{
+			try
+			{
+				return this.labelRL.GetAllLabel(userId);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
     }
 }

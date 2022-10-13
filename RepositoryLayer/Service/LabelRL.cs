@@ -4,6 +4,7 @@ using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RepositoryLayer.Service
@@ -16,14 +17,14 @@ namespace RepositoryLayer.Service
         {
             this.fundooContext = fundooContext;
         }
-        public LabelEntity CreateLabel(long UserId,long NoteId,string LabelName)
+        public LabelEntity CreateLabel(long userId,long noteId,string labelName)
         {
             try
             {
                 LabelEntity labelEntity = new LabelEntity();
-                labelEntity.UserId = UserId;
-                labelEntity.NoteId = NoteId;
-                labelEntity.LabelName = LabelName;
+                labelEntity.UserId = userId;
+                labelEntity.NoteId = noteId;
+                labelEntity.LabelName = labelName;
                 fundooContext.LabelTable.Add(labelEntity);
                 int result = fundooContext.SaveChanges();
                 if(result>0)
@@ -38,7 +39,18 @@ namespace RepositoryLayer.Service
             }
             catch (Exception ex)
             {
-
+                throw ex;
+            }
+        }
+        public List<LabelEntity> GetAllLabel(long userId)
+        {
+            try
+            {
+                var result = fundooContext.LabelTable.Where(u => u.UserId == userId).ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }

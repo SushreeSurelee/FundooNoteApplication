@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryLayer.Entities;
 using System;
+using System.Collections.Generic;
 
 namespace FundooNoteApplication.Controllers
 {
@@ -17,12 +19,12 @@ namespace FundooNoteApplication.Controllers
             this.labelBL = labelBL;
         }
         [HttpPost("CreateLabel")]
-        public IActionResult CreateLabel(long NoteId, string LabelName)
+        public IActionResult CreateLabel(long noteId, string labelName)
         {
             try
             {
-                long UserId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var result = this.labelBL.CreateLabel(UserId, NoteId, LabelName);
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.labelBL.CreateLabel(userId, noteId, labelName);
                 if(result!=null)
                 {
                     return this.Ok(new { success = true, message = "Label is created Successfully", data = result });
@@ -34,11 +36,29 @@ namespace FundooNoteApplication.Controllers
             }
             catch (Exception ex)
             {
-
+                throw ex;
+            }      
+        }
+        [HttpGet("GetAllLabel")]
+        public IActionResult GetAllLabel()
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var result = this.labelBL.GetAllLabel(userId);
+                if (result!=null)
+                {
+                    return this.Ok(new { success = true, message = "Label Fetched Successfully", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to Fetch Label" });
+                }
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
-            
-
         }
     }
 }
