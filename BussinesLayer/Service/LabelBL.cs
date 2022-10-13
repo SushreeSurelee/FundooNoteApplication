@@ -38,5 +38,16 @@ namespace BussinesLayer.Service
 				throw ex;
 			}
 		}
+        public LabelEntity UpdateLabel(long noteId, long labelId, string labelName)
+		{
+			try
+			{
+				return this.labelRL.UpdateLabel(noteId, labelId, labelName);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
     }
 }

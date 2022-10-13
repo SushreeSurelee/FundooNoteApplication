@@ -54,5 +54,28 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public LabelEntity UpdateLabel(long noteId,long labelId,string labelName)
+        {
+            try
+            {
+                var result = fundooContext.LabelTable.Where(u => u.NoteId == noteId && u.LabelId == labelId).FirstOrDefault();
+                if(result!=null)
+                {
+                    result.LabelName = labelName;
+                    fundooContext.LabelTable.Update(result);
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

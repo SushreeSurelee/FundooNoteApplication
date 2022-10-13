@@ -60,5 +60,26 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPut("UpdateLable")]
+        public IActionResult UpdateLabel(long noteId, long labelId, string labelName)
+        {
+            try
+            {
+                var result = this.labelBL.UpdateLabel(noteId, labelId, labelName);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = "Label Updated Successfully", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to Update Label" });
+                }
+                    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
