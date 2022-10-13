@@ -77,5 +77,26 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public bool DeleteLabel(string labelName)
+        {
+            try
+            {
+                var result = fundooContext.LabelTable.Where(u => u.LabelName == labelName).FirstOrDefault();
+                if(result!=null)
+                {
+                    fundooContext.LabelTable.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

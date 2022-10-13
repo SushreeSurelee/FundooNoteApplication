@@ -49,5 +49,16 @@ namespace BussinesLayer.Service
 				throw ex;
 			}
 		}
+        public bool DeleteLabel(string labelName)
+		{
+			try
+			{
+				return this.labelRL.DeleteLabel(labelName);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
     }
 }
