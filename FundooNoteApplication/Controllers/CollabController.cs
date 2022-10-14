@@ -3,7 +3,13 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using RepositoryLayer.Entities;
 using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundooNoteApplication.Controllers
 {
@@ -13,9 +19,11 @@ namespace FundooNoteApplication.Controllers
     public class CollabController : ControllerBase
     {
         private readonly ICollabBL collabBL;
-        public CollabController(ICollabBL collabBL)
+        private readonly IDistributedCache distributedCache;
+        public CollabController(ICollabBL collabBL, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
+            this.distributedCache = distributedCache;
         }
 
         [HttpPost("Create")]
@@ -40,21 +48,34 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpGet("Get")]
-        public IActionResult GetAllCollab()
+        [HttpGet("GetCollab")]
+        public async Task<IActionResult> GetAllCollab()
         {
             try
             {
-                long UserId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var result = this.collabBL.GetAllCollab(UserId);
-                if (result != null)
+                long userId = long.Parse(User.FindFirst("userId").Value.ToString());
+                var cachekey = Convert.ToString(userId);
+                string serializedCollabList;
+                var collabResult = collabBL.GetAllCollab(userId);
+
+                var redisCollabList = await distributedCache.GetAsync(cachekey);
+
+                if (redisCollabList != null)
                 {
-                    return this.Ok(new { Success = true, message = "All Collab are fetched Successfully", data = result });
+                    serializedCollabList = Encoding.UTF8.GetString(redisCollabList);
+                    collabResult = JsonConvert.DeserializeObject<List<CollabEntity>>(serializedCollabList);
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Unable to show the collaborates" });
+                    serializedCollabList = JsonConvert.SerializeObject(collabResult);
+                    redisCollabList = Encoding.UTF8.GetBytes(serializedCollabList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+
+                    await distributedCache.SetAsync(cachekey, redisCollabList, options);
                 }
+                return this.Ok(new { success = true, message = "All Collab are fetched Successfully", data = collabResult });
             }
             catch (Exception ex)
             {

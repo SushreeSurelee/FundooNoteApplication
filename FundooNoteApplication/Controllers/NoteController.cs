@@ -60,37 +60,27 @@ namespace FundooNoteApplication.Controllers
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
                 var cachekey = Convert.ToString(userId);
-                string serializeddata;
-                List<NoteEntity> result;
+                string serializedNoteList;
+                var noteResult = this.noteBL.GetNote(userId);
 
-                var distcacheresult = await distributedCache.GetAsync(cachekey);
+                var redisNoteList = await distributedCache.GetAsync(cachekey);
 
-                if (distcacheresult != null)
+                if (redisNoteList != null)
                 {
-                    serializeddata = Encoding.UTF8.GetString(distcacheresult);
-                    result = JsonConvert.DeserializeObject<List<NoteEntity>>(serializeddata);
-
-                    return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = result });
+                    serializedNoteList = Encoding.UTF8.GetString(redisNoteList);
+                    noteResult = JsonConvert.DeserializeObject<List<NoteEntity>>(serializedNoteList);
                 }
                 else
                 {
-                    var noteResult = this.noteBL.GetNote(userId);
-                    serializeddata = JsonConvert.SerializeObject(noteResult);
-                    distcacheresult = Encoding.UTF8.GetBytes(serializeddata);
+                    serializedNoteList = JsonConvert.SerializeObject(noteResult);
+                    redisNoteList = Encoding.UTF8.GetBytes(serializedNoteList);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
-                        .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
 
-                    await distributedCache.SetAsync(cachekey, distcacheresult, options);
-                    if (noteResult != null)
-                    {
-                        return this.Ok(new { sucess = true, message = "All notes are fetched and now you can read your notes", data = noteResult });
-                    }
-                    else
-                    {
-                        return this.BadRequest(new { sucess = false, message = "Unable to show the notes." });
-                    }
+                    await distributedCache.SetAsync(cachekey, redisNoteList, options);
                 }
+                return this.Ok(new { success = true, message = "All notes are fetched Successfully", data = noteResult });
             }
             catch (Exception ex)
             {
@@ -257,7 +247,5 @@ namespace FundooNoteApplication.Controllers
             }
             
         }
-
-
     }
 }
