@@ -7,6 +7,14 @@ using RepositoryLayer.Entities;
 using System.Linq;
 using System;
 using System.Security.Claims;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using RepositoryLayer.Context;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace FundooNoteApplication.Controllers
 {
@@ -16,11 +24,13 @@ namespace FundooNoteApplication.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteBL noteBL;
-        public NoteController(INoteBL noteBL)
+        private readonly IDistributedCache distributedCache;
+        public NoteController(INoteBL noteBL, IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
+            this.distributedCache = distributedCache;
         }
-        [HttpPost("CreateNote")]
+        [HttpPost("Create")]
         public IActionResult UserNoteCreation(Note createNote)
         {
             try
@@ -44,19 +54,42 @@ namespace FundooNoteApplication.Controllers
             }
         }
         [HttpGet("GetNote")]
-        public IActionResult GetNote()
+        public async Task<IActionResult> GetNote()
         {
             try
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var result = this.noteBL.GetNote(userId);
-                if (result != null)
+                var cachekey = Convert.ToString(userId);
+                string serializeddata;
+                List<NoteEntity> result;
+
+                var distcacheresult = await distributedCache.GetAsync(cachekey);
+
+                if (distcacheresult != null)
                 {
-                    return this.Ok(new { sucess = true, message = "All notes are fetched and now you can read your notes", data = result });
+                    serializeddata = Encoding.UTF8.GetString(distcacheresult);
+                    result = JsonConvert.DeserializeObject<List<NoteEntity>>(serializeddata);
+
+                    return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { sucess = false, message = "Unable to show the notes." });
+                    var noteResult = this.noteBL.GetNote(userId);
+                    serializeddata = JsonConvert.SerializeObject(noteResult);
+                    distcacheresult = Encoding.UTF8.GetBytes(serializeddata);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+                    await distributedCache.SetAsync(cachekey, distcacheresult, options);
+                    if (noteResult != null)
+                    {
+                        return this.Ok(new { sucess = true, message = "All notes are fetched and now you can read your notes", data = noteResult });
+                    }
+                    else
+                    {
+                        return this.BadRequest(new { sucess = false, message = "Unable to show the notes." });
+                    }
                 }
             }
             catch (Exception ex)
@@ -64,7 +97,8 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("UpdateNote")]
+ 
+        [HttpPut("Update")]
         public IActionResult UpdateNote(long noteId, Note note)
         {
             try
@@ -85,7 +119,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpDelete("DeleteNote")]
+        [HttpDelete("Delete")]
         public IActionResult DeleteNote(long noteId)
         {
             try
@@ -108,7 +142,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("PinNote")]
+        [HttpPut("Pin")]
         public IActionResult PinnedNote(long noteId)
         {
             try
@@ -132,7 +166,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("ArchiveNote")]
+        [HttpPut("Archive")]
         public IActionResult ArchiveNote(long noteId)
         {
             try
@@ -156,7 +190,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("TrashNote")]
+        [HttpPut("Trash")]
         public IActionResult Trashed(long noteId)
         {
             try
@@ -181,7 +215,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("NoteColour")]
+        [HttpPut("Colour")]
         public IActionResult NoteColour(long noteId, string colour)
         {
             try
@@ -223,5 +257,7 @@ namespace FundooNoteApplication.Controllers
             }
             
         }
+
+
     }
 }

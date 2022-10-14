@@ -77,11 +77,11 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public bool DeleteLabel(string labelName)
+        public bool DeleteLabel(long labelId)
         {
             try
             {
-                var result = fundooContext.LabelTable.Where(u => u.LabelName == labelName).FirstOrDefault();
+                var result = fundooContext.LabelTable.Where(u => u.LabelId == labelId).FirstOrDefault();
                 if(result!=null)
                 {
                     fundooContext.LabelTable.Remove(result);

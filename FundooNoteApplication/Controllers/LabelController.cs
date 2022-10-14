@@ -18,7 +18,7 @@ namespace FundooNoteApplication.Controllers
         {
             this.labelBL = labelBL;
         }
-        [HttpPost("CreateLabel")]
+        [HttpPost("Create")]
         public IActionResult CreateLabel(long noteId, string labelName)
         {
             try
@@ -39,7 +39,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }      
         }
-        [HttpGet("GetAllLabel")]
+        [HttpGet("Get")]
         public IActionResult GetAllLabel()
         {
             try
@@ -60,7 +60,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpPut("UpdateLable")]
+        [HttpPut("Update")]
         public IActionResult UpdateLabel(long noteId, long labelId, string labelName)
         {
             try
@@ -81,12 +81,12 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpDelete("DeleteLabel")]
-        public IActionResult DeleteLabel(string labelName)
+        [HttpDelete("Delete")]
+        public IActionResult DeleteLabel(long labelId)
         {
             try
             {
-                var result = this.labelBL.DeleteLabel(labelName);
+                var result = this.labelBL.DeleteLabel(labelId);
                 if (result)
                 {
                     return this.Ok(new { success = true, message = "Label Deleted Successfully" });

@@ -49,11 +49,11 @@ namespace BussinesLayer.Service
 				throw ex;
 			}
 		}
-        public bool DeleteLabel(string labelName)
+        public bool DeleteLabel(long labelId)
 		{
 			try
 			{
-				return this.labelRL.DeleteLabel(labelName);
+				return this.labelRL.DeleteLabel(labelId);
 			}
 			catch (Exception ex)
 			{

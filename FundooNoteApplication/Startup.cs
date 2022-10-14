@@ -46,6 +46,11 @@ namespace FundooNoteApplication
             services.AddTransient<ILabelRL, LabelRL>();
             services.AddTransient<ILabelBL, LabelBL>();
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
+
             services.AddSwaggerGen(setup =>
             {
                 var jwtSecurityScheme = new OpenApiSecurityScheme

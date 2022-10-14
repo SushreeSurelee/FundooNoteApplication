@@ -18,7 +18,7 @@ namespace FundooNoteApplication.Controllers
             this.collabBL = collabBL;
         }
 
-        [HttpPost("CreateCollaborator")]
+        [HttpPost("Create")]
         public IActionResult CreateCollab(long NoteId, Collaborator collaborator)
         {
             try
@@ -40,7 +40,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpGet("GetAllCollaborator")]
+        [HttpGet("Get")]
         public IActionResult GetAllCollab()
         {
             try
@@ -61,7 +61,7 @@ namespace FundooNoteApplication.Controllers
                 throw ex;
             }
         }
-        [HttpDelete("DeleteCollaborator")]
+        [HttpDelete("Delete")]
         public IActionResult DeleteCollab(long collabId)
         {
             var result = this.collabBL.DeleteCollab(collabId);
