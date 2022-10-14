@@ -54,7 +54,7 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var cachekey = Convert.ToString(userId);
+                var cachekey = "CollabList";
                 string serializedCollabList;
                 var collabResult = collabBL.GetAllCollab(userId);
 

@@ -59,7 +59,7 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var cachekey = Convert.ToString(userId);
+                var cachekey = "NoteList";
                 string serializedNoteList;
                 var noteResult = this.noteBL.GetNote(userId);
 

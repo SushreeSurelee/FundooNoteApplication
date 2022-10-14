@@ -51,7 +51,7 @@ namespace FundooNoteApplication.Controllers
             try
             {
                 long userId = long.Parse(User.FindFirst("userId").Value.ToString());
-                var cachekey = Convert.ToString(userId);
+                var cachekey = "LabelList";
                 string serializedLabelList;
                 var labelResult = labelBL.GetAllLabel(userId);
 
