@@ -21,5 +21,9 @@
     <ProjectReference Include="..\BussinesLayer\BussinesLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 
 </Project>

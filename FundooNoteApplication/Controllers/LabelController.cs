@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RepositoryLayer.Entities;
 using System;
@@ -19,10 +20,12 @@ namespace FundooNoteApplication.Controllers
     {
         private readonly ILabelBL labelBL;
         private readonly IDistributedCache distributedCache;
-        public LabelController(ILabelBL labelBL, IDistributedCache distributedCache)
+        private readonly ILogger<CollabController> logger;
+        public LabelController(ILabelBL labelBL, IDistributedCache distributedCache, ILogger<CollabController> logger)
         {
             this.labelBL = labelBL;
             this.distributedCache = distributedCache;
+            this.logger = logger;
         }
         [HttpPost("Create")]
         public IActionResult CreateLabel(long noteId, string labelName)
@@ -33,15 +36,18 @@ namespace FundooNoteApplication.Controllers
                 var result = this.labelBL.CreateLabel(userId, noteId, labelName);
                 if(result!=null)
                 {
+                    logger.LogInformation("Label is created Successfully");
                     return this.Ok(new { success = true, message = "Label is created Successfully", data = result });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to Label note");
                     return this.BadRequest(new { success = false, message = "Unable to Label note" });
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.ToString());
                 throw ex;
             }      
         }
@@ -72,10 +78,12 @@ namespace FundooNoteApplication.Controllers
 
                     await distributedCache.SetAsync(cachekey, redisLabelList, options);
                 }
+                logger.LogInformation("All Label Fetched Successfully");
                 return this.Ok(new { success = true, message = "All Label Fetched Successfully", data = labelResult });
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.ToString());
                 throw ex;
             }
         }
@@ -87,16 +95,18 @@ namespace FundooNoteApplication.Controllers
                 var result = this.labelBL.UpdateLabel(noteId, labelId, labelName);
                 if (result != null)
                 {
+                    logger.LogInformation("Label Updated Successfully");
                     return this.Ok(new { success = true, message = "Label Updated Successfully", data = result });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to Update Label");
                     return this.BadRequest(new { success = false, message = "Unable to Update Label" });
                 }
-                    
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.ToString());
                 throw ex;
             }
         }
@@ -108,15 +118,18 @@ namespace FundooNoteApplication.Controllers
                 var result = this.labelBL.DeleteLabel(labelId);
                 if (result)
                 {
+                    logger.LogInformation("Label Deleted Successfully");
                     return this.Ok(new { success = true, message = "Label Deleted Successfully" });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to Delete Label note");
                     return this.BadRequest(new { success = false, message = "Unable to Delete Label note" });
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.ToString());
                 throw ex;
             }
         }
