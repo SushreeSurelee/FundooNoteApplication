@@ -31,7 +31,7 @@ namespace RepositoryLayer.Service
                 userEntity.FirstName = registration.FirstName;
                 userEntity.LastName = registration.LastName;
                 userEntity.EmailID = registration.EmailID;
-                userEntity.Password = registration.Password;
+                userEntity.Password = EncryptionPassword(registration.Password);
 
                 fundooContext.UserTable.Add(userEntity);
                 int result=fundooContext.SaveChanges();
@@ -49,12 +49,39 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public string EncryptionPassword(string password)
+        {
+            try
+            {
+                byte[] encode = ASCIIEncoding.ASCII.GetBytes(password);
+                string encrypted = Convert.ToBase64String(encode);
+                return encrypted;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string DecryptionPassword(string encodedData)
+        {
+            try
+            {
+                byte[] decode = Convert.FromBase64String(encodedData);
+                string decrypted = ASCIIEncoding.ASCII.GetString(decode);
+                return decrypted;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public string UserLogin(Login login)
         {
             try
             {
-                var result = this.fundooContext.UserTable.FirstOrDefault(e => e.EmailID == login.EmailID && e.Password == login.Password);
-                if(result!=null)
+                var result = this.fundooContext.UserTable.FirstOrDefault(e => e.EmailID == login.EmailID);
+                string decodePass = DecryptionPassword(result.Password);
+                if(decodePass ==login.Password && result != null)
                 {
                     return GenerateSecurityToken(result.EmailID,result.UserId);
                 }
